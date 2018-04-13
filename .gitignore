@@ -1,0 +1,10 @@
+/.project
+/.pydevproject
+/Clients/
+/Logs/
+/config.py
+/device_names.yaml
+/_deprecated/
+/__pycache__/
+/utils/__pycache__/
+/.settings/
