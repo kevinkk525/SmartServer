@@ -60,13 +60,13 @@ class Client:
     def __init__(self, device, version=None):
         self.id = device
         self.version = version
-        self.log = logging.getLogger(self.id)
-        self.log.setLevel(logging.DEBUG)
         oslist = os.listdir(os.getcwd())
         if "Clients" not in oslist:
             os.mkdir("Clients")
         oslist = os.listdir(os.getcwd() + "/Clients")
         self.device_name = getDeviceName(self.id)
+        self.log = logging.getLogger(self.device_name)
+        self.log.setLevel(logging.DEBUG)
         #print("Got device name {!s}".format(self.device_name))
         if self.device_name not in oslist:
             if self.id in oslist:
