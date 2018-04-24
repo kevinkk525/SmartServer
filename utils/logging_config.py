@@ -17,8 +17,10 @@ log.setLevel(logging.DEBUG)
 oslist = os.listdir(os.getcwd())
 if "Logs" not in oslist:
     os.mkdir("Logs")
-handler = logging.handlers.TimedRotatingFileHandler(
-    config.LOG_FOLDER + config.LOG_FILENAME, when="midnight")
+# handler = logging.handlers.TimedRotatingFileHandler(
+#    config.LOG_FOLDER + config.LOG_FILENAME, when="midnight")
+handler = logging.handlers.RotatingFileHandler(config.LOG_FOLDER + config.LOG_FILENAME,
+                                               maxBytes=1024 * 1024, backupCount=5)
 clihandler = logging.StreamHandler()
 clihandler.setLevel(logging.DEBUG)
 handler.setLevel(logging.INFO)

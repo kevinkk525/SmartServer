@@ -6,8 +6,8 @@ Created on 25.03.2018
 @author: Kevin Köck
 '''
 
-__version__ = "1.3"
-__updated__ = "2018-04-13"
+__version__ = "1.3.1"
+__updated__ = "2018-04-24"
 
 import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
