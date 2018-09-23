@@ -1,8 +1,9 @@
 # SmartServer
 
 This is a python3 based server for SmartHomes based on MQTT to provide device configurations and to collect log messages of devices. 
-It is designed to be used with my ``Micropython SmartHome Node`` project [pysmartnode](https://) which runs on esp8266 and esp32.
+It is designed to be used with my ``Micropython SmartHome Node`` project [pysmartnode](https://github.com/kevinkk525/pysmartnode) which runs on esp8266 and esp32.
 It can of course be used without using that project just for collecting log messages in your MQTT network.
+This project can be run as a standalone component or as a plugin for Home-Assistant (see homeassistant branch).
 
 ## 1. How it works
 
