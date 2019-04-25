@@ -7,8 +7,8 @@ https://home-assistant.io/components/pysmartnode_mqtt_log_collector.switch/
 
 __author = "Kevin Köck"
 
-__version__ = "1.0.1"
-__updated__ = "2018-09-01"
+__version__ = "1.0.2"
+__updated__ = "2019-04-25"
 
 import asyncio
 import logging
@@ -23,7 +23,7 @@ from homeassistant.components.switch import SwitchDevice, PLATFORM_SCHEMA
 from homeassistant.const import CONF_NAME
 from homeassistant.helpers.script import Script
 from homeassistant.components.mqtt import CONF_COMMAND_TOPIC
-from . import pysmartnode_devices
+from .. import pysmartnode_devices
 import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
@@ -39,9 +39,9 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
     # Integrations shouldn't never expose unique_id through configuration
     # this here is an exception because MQTT is a msg transport, not a protocol
-    vol.Optional(CONF_UNIQUE_ID): cv.string,
-    vol.Optional(CONF_OFF_ACTION): cv.SCRIPT_SCHEMA,
-    vol.Optional(CONF_ON_ACTION): cv.SCRIPT_SCHEMA,
+    vol.Optional(CONF_UNIQUE_ID):                  cv.string,
+    vol.Optional(CONF_OFF_ACTION):                 cv.SCRIPT_SCHEMA,
+    vol.Optional(CONF_ON_ACTION):                  cv.SCRIPT_SCHEMA,
 })
 
 
@@ -85,21 +85,21 @@ class PysmartnodeMQTTLogCollector(SwitchDevice):
         clg(msg)
 
     @callback
-    def _command_message_received(self, topic, payload, qos):
+    def _command_message_received(self, msg):
         """Handle a new received MQTT state message."""
         if self._state is False:
             return  # component not active
         # workaround for bug https://github.com/home-assistant/home-assistant/issues/16354
-        if topic.find("home/log/") == -1:
+        if msg.topic.find("home/log/") == -1:
             return
         #
-        topic = topic.split("/")
+        topic = msg.topic.split("/")
         if len(topic) != len(self._command_topic.split("/")) + 1:
             _LOGGER.error("Unsupported logging topic: {!s}".format(topic))
             return
         level = topic[len(self._command_topic.split("/")) - 1]
         device = topic[len(self._command_topic.split("/"))]
-        asyncio.ensure_future(self._receive_log(device, level, payload))
+        asyncio.ensure_future(self._receive_log(device, level, msg.payload))
 
     @asyncio.coroutine
     def async_added_to_hass(self):

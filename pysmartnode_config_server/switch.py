@@ -7,8 +7,8 @@ https://home-assistant.io/components/pysmartnode_config_server.switch/
 
 __author = "Kevin Köck"
 
-__version__ = "1.0.3"
-__updated__ = "2018-09-01"
+__version__ = "1.0.4"
+__updated__ = "2019-04-25"
 
 import asyncio
 import logging
@@ -24,7 +24,7 @@ from homeassistant.const import (CONF_NAME, CONF_VALUE_TEMPLATE)
 from homeassistant.helpers.script import Script
 from homeassistant.components.mqtt import (
     CONF_COMMAND_TOPIC)
-from . import pysmartnode_devices
+from .. import pysmartnode_devices
 import homeassistant.helpers.config_validation as cv
 
 REQUIREMENTS = ['hjson']
@@ -42,9 +42,9 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
     # Integrations shouldn't never expose unique_id through configuration
     # this here is an exception because MQTT is a msg transport, not a protocol
-    vol.Optional(CONF_UNIQUE_ID): cv.string,
-    vol.Optional(CONF_OFF_ACTION): cv.SCRIPT_SCHEMA,
-    vol.Optional(CONF_ON_ACTION): cv.SCRIPT_SCHEMA,
+    vol.Optional(CONF_UNIQUE_ID):                  cv.string,
+    vol.Optional(CONF_OFF_ACTION):                 cv.SCRIPT_SCHEMA,
+    vol.Optional(CONF_ON_ACTION):                  cv.SCRIPT_SCHEMA,
 })
 
 
@@ -93,20 +93,20 @@ class PysmartnodeConfigServer(SwitchDevice):
                            json.dumps(conf), qos=1)
 
     @callback
-    def _command_message_received(self, topic, payload, qos):
+    def _command_message_received(self, msg):
         """Handle a new received MQTT state message."""
         if self._template is not None:
             payload = self._template.async_render_with_possible_json_value(
-                payload)
+                msg.payload)
         if self._state is False:
             return  # component not active
-        if topic.rfind("/set") == -1:
+        if msg.topic.rfind("/set") == -1:
             # own answer to a login topic
             return
-        device = topic[topic.find(self._command_topic[:-1]) +
-                       len(self._command_topic) - 1:
-                       topic.rfind("/set")]
-        version = payload
+        device = msg.topic[msg.topic.find(self._command_topic[:-1]) +
+                           len(self._command_topic) - 1:
+                           msg.topic.rfind("/set")]
+        version = msg.payload
         _LOGGER.debug("Config request from {!s} version {!s}".format(device, version))
         asyncio.ensure_future(self._send_config(device, version))
 
