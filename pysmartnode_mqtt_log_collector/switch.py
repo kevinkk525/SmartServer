@@ -1,14 +1,11 @@
 """
 Support for MQTT log message collection.
-
-For more details about this platform, please refer to the documentation at
-https://home-assistant.io/components/pysmartnode_mqtt_log_collector.switch/
 """
 
 __author = "Kevin Köck"
 
-__version__ = "1.0.2"
-__updated__ = "2019-04-25"
+__version__ = "1.0.3"
+__updated__ = "2019-07-13"
 
 import asyncio
 import logging
@@ -32,8 +29,6 @@ CONF_OFF_ACTION = "turn_off"
 CONF_ON_ACTION = "turn_on"
 CONF_UNIQUE_ID = 'unique_id'
 DEFAULT_NAME = 'Pysmartnode mqtt log collector'
-
-DEPENDENCIES = ['mqtt']
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,

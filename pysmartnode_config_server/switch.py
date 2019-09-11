@@ -1,14 +1,11 @@
 """
 Support for MQTT SmartServer providing device configurations.
-
-For more details about this platform, please refer to the documentation at
-https://home-assistant.io/components/pysmartnode_config_server.switch/
 """
 
 __author = "Kevin Köck"
 
-__version__ = "1.0.4"
-__updated__ = "2019-04-25"
+__version__ = "1.0.5"
+__updated__ = "2019-07-13"
 
 import asyncio
 import logging
@@ -27,16 +24,12 @@ from homeassistant.components.mqtt import (
 from .. import pysmartnode_devices
 import homeassistant.helpers.config_validation as cv
 
-REQUIREMENTS = ['hjson']
-
 _LOGGER = logging.getLogger(__name__)
 
 CONF_OFF_ACTION = "turn_off"
 CONF_ON_ACTION = "turn_on"
 CONF_UNIQUE_ID = 'unique_id'
 DEFAULT_NAME = 'Pysmartnode config server'
-
-DEPENDENCIES = ['mqtt']
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,

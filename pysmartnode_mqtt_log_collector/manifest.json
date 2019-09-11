@@ -1,0 +1,12 @@
+{
+  "domain": "pysmartnode_log",
+  "name": "Pysmartnode Logging Server",
+  "documentation": "https://github.com/kevinkk525/SmartServer",
+  "requirements": [],
+  "dependencies": [
+    "mqtt"
+  ],
+  "codeowners": [
+    "@kevinkk525"
+  ]
+}

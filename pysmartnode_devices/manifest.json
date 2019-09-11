@@ -1,0 +1,12 @@
+{
+  "domain": "pysmartnode_devices",
+  "name": "Pysmartnode Devices Library",
+  "documentation": "https://github.com/kevinkk525/SmartServer",
+  "requirements": [
+    "hjson==3.0.1"
+  ],
+  "dependencies": [],
+  "codeowners": [
+    "@kevinkk525"
+  ]
+}
