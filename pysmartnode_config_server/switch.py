@@ -71,19 +71,27 @@ class PysmartnodeConfigServer(SwitchDevice):
         """Initialize the MQTT SmartServer."""
         self._name = name
         self._state = True
-        self._command_topic = command_topic or "home/login/#"
+        self._command_topic = command_topic or "home/login/+/set"
         self._template = value_template
         self._unique_id = unique_id
         self._off_script = Script(hass, off_action) if off_action else None
         self._on_script = Script(hass, on_action) if on_action else None
 
-    async def _send_config(self, device, version):
+    async def _send_config(self, device, version, platform, wait):
         client = await pysmartnode_devices.getClient(self.hass, device, version)
         conf = client.getConfig()
         _LOGGER.debug("Config for {!s}: {!s}".format(device, conf))
-        mqtt.async_publish(self.hass,
-                           "{!s}{!s}".format(self._command_topic[:-1], device),
-                           json.dumps(conf), qos=1)
+        if platform is None:
+            mqtt.async_publish(self.hass,
+                               "{!s}{!s}".format("home/login/", device),
+                               json.dumps(conf), qos=1)
+        else:
+            i = len(conf["_order"])
+            mqtt.async_publish(self.hass, "{!s}{!s}".format("home/login/", device), i, qos=1)
+            for component in conf["_order"]:
+                await asyncio.sleep(wait)
+                mqtt.async_publish(self.hass, "{!s}{!s}/{!s}".format("home/login/", device, component),
+                                   json.dumps(conf[component]), qos=1)
 
     @callback
     def _command_message_received(self, msg):
@@ -96,12 +104,17 @@ class PysmartnodeConfigServer(SwitchDevice):
         if msg.topic.rfind("/set") == -1:
             # own answer to a login topic
             return
-        device = msg.topic[msg.topic.find(self._command_topic[:-1]) +
-                           len(self._command_topic) - 1:
+        device = msg.topic[msg.topic.find("home/login/") +
+                           len("home/login/"):
                            msg.topic.rfind("/set")]
         version = msg.payload
-        _LOGGER.debug("Config request from {!s} version {!s}".format(device, version))
-        asyncio.ensure_future(self._send_config(device, version))
+        try:
+            version, platform, wait = json.loads(version)
+        except:
+            platform = None
+            wait = None
+        _LOGGER.debug("Config request from {!s} version {!s} platform {!s}".format(device, version, platform))
+        asyncio.ensure_future(self._send_config(device, version, platform, wait))
 
     @asyncio.coroutine
     def async_added_to_hass(self):
