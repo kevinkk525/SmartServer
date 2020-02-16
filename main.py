@@ -48,7 +48,8 @@ async def sendConfig(topic, msg, retain):
         version = msg
         try:
             version, platform, wait = json.loads(version)
-        except:
+        except Exception as e:
+            log.warn("Version should always be list, error {!s}".format(e))
             platform = None
             wait = None
     log.info(
