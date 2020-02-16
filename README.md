@@ -82,15 +82,16 @@ Of course the directory can be renamed manually after the name has been put into
 
 ## 4. Install and run with Docker
 
-Clone this Repo and create your personally _config.py_ file.
-Build an docker Image with 
+Clone this repo and go into directory with ```cd SmartServer```.
+
+create your personal _config.py_ file.
+Build a docker Image with 
 ```
 docker build -t smartserver .
 ``` 
 The last ```.``` "Dot" is important!
 To run the SmartServer
 ```
-docker run -d -v "$PWD":/usr/src/myapp --name smartserver smartserver:latest
+docker run -d -v /<pathtodir>/SmartServer:/usr/src/app --name smartserver smartserver:latest
 ```
-
-You can find the SmartServer Logs with ```docker logs smartserver -f```
+You can find the SmartServer Logs at ```/<pathtodir>/SmartServer```
