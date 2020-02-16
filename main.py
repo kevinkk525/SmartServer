@@ -10,6 +10,7 @@ __version__ = "1.3.1"
 __updated__ = "2018-04-24"
 
 import os
+import json
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 if "config.py" not in os.listdir():
