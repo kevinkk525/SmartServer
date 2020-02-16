@@ -79,3 +79,20 @@ Changing the configuration of a client is possible at all times as the files are
 As it can be quite challenging to keep in mind which device-id belonged to which device, it is possible to define a custom name in the file ``device_names.yaml`` in the root of the project. You just have to replace the ``null`` after the device-id with the name you would like your device to have.
 Once the server receives a new configuration request or log message to that device, the device's configuration directory will be renamed to the name you chose. And so will be the log file. 
 Of course the directory can be renamed manually after the name has been put into the device_names.yaml.
+
+## 4. Install and run with Docker
+
+Clone this repo and change into the directory with ```cd SmartServer```.
+
+Create your personal _config.py_ file.
+
+Build a docker image with 
+```
+docker build -t smartserver .
+``` 
+The last ```.``` "Dot" is important!
+To run the SmartServer
+```
+docker run -d -v /<pathtodir>/SmartServer:/usr/src/app --name smartserver smartserver:latest
+```
+You can find the SmartServer Logs at ```/<pathtodir>/SmartServer```
