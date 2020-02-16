@@ -46,10 +46,9 @@ async def sendConfig(topic, msg, retain):
         device = topic[topic.find("{!s}/login/".format(config.MQTT_HOME)) +
                        len("{!s}/login/".format(config.MQTT_HOME)):topic.rfind("/set")]
         version = msg
-        try:
-            version, platform, wait = json.loads(version)
-        except Exception as e:
-            log.warn("Version should always be list, error {!s}".format(e))
+        if type(version) == list:
+            version, platform, wait = version
+        else:
             platform = None
             wait = None
     log.info(
