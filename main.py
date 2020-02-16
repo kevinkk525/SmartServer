@@ -10,9 +10,11 @@ __version__ = "1.3.1"
 __updated__ = "2018-04-24"
 
 import os
+
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 if "config.py" not in os.listdir():
     import shutil
+
     shutil.copy("config_example.py", "config.py")
 import config
 from utils import logging_config
@@ -20,6 +22,7 @@ from utils.mqtt import MQTTHandler
 import asyncio
 import logging
 from utils import clients
+
 log = logging.getLogger("Main")
 
 loop = asyncio.get_event_loop()
@@ -42,12 +45,26 @@ async def sendConfig(topic, msg, retain):
         device = topic[topic.find("{!s}/login/".format(config.MQTT_HOME)) +
                        len("{!s}/login/".format(config.MQTT_HOME)):topic.rfind("/set")]
         version = msg
-    log.info("Got config request from {!r} with version {!r}".format(device, version))
+        try:
+            version, platform, wait = json.loads(version)
+        except:
+            platform = None
+            wait = None
+    log.info(
+        "Config request from {!s} version {!s} platform {!s}".format(device, version, platform))
     client = await clients.getClient(device, version)
     conf = client.getConfig()
     log.debug("Config for {!s}: {!s}".format(device, conf))
-    mqtt.publish("{!s}/login/{!s}".format(config.MQTT_HOME, device),
-                 conf, retain=False, qos=1)
+    if platform is None:
+        mqtt.publish("{!s}/login/{!s}".format(config.MQTT_HOME, device),
+                     conf, retain=False, qos=1)
+    else:
+        i = len(conf["_order"])
+        mqtt.publish("{!s}/login/{!s}".format(config.MQTT_HOME, device), i, qos=1)
+        for component in conf["_order"]:
+            await asyncio.sleep(wait)
+            mqtt.publish("{!s}/login/{!s}/{!s}".format(config.MQTT_HOME, device, component),
+                         json.dumps(conf[component]), qos=1)
 
 
 async def getLog(topic, msg, retain):
