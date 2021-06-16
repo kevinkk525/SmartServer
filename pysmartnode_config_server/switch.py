@@ -119,7 +119,7 @@ class PysmartnodeConfigServer(SwitchDevice):
     @asyncio.coroutine
     def async_added_to_hass(self):
         """Subscribe mqtt events."""
-
+        yield from asyncio.sleep(2) # time to get mqtt set up properly
         yield from mqtt.async_subscribe(
             self.hass, self._command_topic, self._command_message_received, qos=1)
 

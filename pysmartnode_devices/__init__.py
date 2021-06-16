@@ -18,6 +18,10 @@ log = logging.getLogger("pysmartnode_devices")
 DEVICE_DIR_NAME = "pysmartnode_devices"
 DEVICE_NAMES_FILE = "pysmartnode_device_names.yaml"
 
+@asyncio.coroutine
+def async_setup_platform(hass, config, async_add_entities,
+                         discovery_info=None):
+    pass
 
 async def getClient(hass, device, version=None):
     if device not in locks:
